@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../types/database';
 
 /**
  * Oquvi - Supabase Client Initialization
@@ -77,7 +76,7 @@ const clientUrl = isSupabaseConfigured ? sanitizedUrl : 'https://placeholder-pro
 const clientKey = isSupabaseConfigured ? sanitizedKey : 'placeholder-anon-key';
 
 // Create the Supabase client with session persistence enabled
-export const supabase = createClient<Database>(clientUrl, clientKey, {
+export const supabase = createClient(clientUrl, clientKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
