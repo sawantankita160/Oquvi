@@ -1,0 +1,495 @@
+/**
+ * TeamFlow - Reusable Component Styles
+ * 
+ * Clean, modular styles for buttons, cards, badges, inputs, avatars, etc.
+ * Designed with a white & soft lavender palette and indigo accents.
+ */
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  box-shadow: var(--shadow-button);
+}
+
+.btn-primary:hover {
+  background: var(--primary-gradient-hover);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-lavender-subtle);
+  color: var(--primary);
+  border-color: rgba(99, 102, 241, 0.15);
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: #e0e7ff;
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: var(--text-main);
+  border-color: var(--border-light);
+}
+
+.btn-outline:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.btn-danger {
+  background: var(--rose-500);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #be123c;
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+}
+
+.btn-md {
+  padding: 9px 18px;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Cards (Rounded & Elevated SaaS Aesthetic)
+   ========================================================================== */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  color: var(--text-main);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.card-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(99, 102, 241, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.725rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
+  border: 1px solid transparent;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.badge-active,
+.badge-in_progress {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: rgba(2, 132, 199, 0.2);
+}
+.badge-active .badge-dot,
+.badge-in_progress .badge-dot { background: #0284c7; }
+
+.badge-completed,
+.badge-done {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: rgba(22, 163, 74, 0.2);
+}
+.badge-completed .badge-dot,
+.badge-done .badge-dot { background: #16a34a; }
+
+.badge-on_hold {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.2);
+}
+.badge-on_hold .badge-dot { background: #d97706; }
+
+.badge-planning,
+.badge-todo {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: rgba(148, 163, 184, 0.25);
+}
+.badge-planning .badge-dot,
+.badge-todo .badge-dot { background: #64748b; }
+
+.badge-in_review {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border-color: rgba(126, 34, 206, 0.2);
+}
+.badge-in_review .badge-dot { background: #9333ea; }
+
+.badge-urgent,
+.badge-high {
+  background: #ffe4e6;
+  color: #be123c;
+  border-color: rgba(225, 29, 72, 0.2);
+}
+.badge-urgent .badge-dot,
+.badge-high .badge-dot { background: #e11d48; }
+
+.badge-medium {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.2);
+}
+
+.badge-low {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   Avatars
+   ========================================================================== */
+.avatar-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.avatar {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-sm { width: 28px; height: 28px; font-size: 0.7rem; }
+.avatar-md { width: 36px; height: 36px; font-size: 0.85rem; }
+.avatar-lg { width: 48px; height: 48px; font-size: 1.05rem; }
+
+.avatar-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.avatar-status-online { background: #10b981; }
+.avatar-status-busy { background: #ef4444; }
+.avatar-status-away { background: #f59e0b; }
+.avatar-status-offline { background: #94a3b8; }
+
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-group .avatar-container {
+  margin-left: -8px;
+  transition: transform var(--transition-fast);
+}
+
+.avatar-group .avatar-container:first-child {
+  margin-left: 0;
+}
+
+.avatar-group .avatar-container:hover {
+  transform: translateY(-2px) scale(1.1);
+  z-index: 10;
+}
+
+/* ==========================================================================
+   Inputs & Form Controls
+   ========================================================================== */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+}
+
+.input-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 12px;
+  color: var(--text-dim);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.input-field.has-icon-left {
+  padding-left: 38px;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.input-field::placeholder {
+  color: var(--text-dim);
+}
+
+.input-error {
+  font-size: 0.775rem;
+  color: var(--rose-500);
+}
+
+.input-helper {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Stat Cards (Dashboard KPIs)
+   ========================================================================== */
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+
+.stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.stat-change.positive { color: #059669; }
+.stat-change.negative { color: #e11d48; }
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-lavender-subtle);
+  color: var(--primary);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+}
+
+/* ==========================================================================
+   Modal & Overlay
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  animation: fadeIn 180ms ease-out;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-card);
+  box-shadow: 0 20px 40px -8px rgba(99, 102, 241, 0.2);
+  width: 100%;
+  max-width: 540px;
+  padding: 28px;
+  animation: scaleUp 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
