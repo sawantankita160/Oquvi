@@ -1,7 +1,7 @@
 /**
- * TeamFlow - Mock Seed Data
+ * Oquvi - Mock Seed Data
  * 
- * Realistic sample data for the collaborative project workspace.
+ * Realistic sample data for the collaborative project workspace with Indian student/professional context.
  */
 
 import type {
@@ -15,8 +15,8 @@ import type {
 
 export const CURRENT_USER: User = {
   id: 'user-1',
-  name: 'Alex Rivera',
-  email: 'alex.rivera@teamflow.dev',
+  name: 'Aarav Sharma',
+  email: 'aarav.sharma@oquvi.dev',
   role: 'Admin',
   status: 'online',
   department: 'Core Engineering'
@@ -26,32 +26,32 @@ export const MOCK_USERS: User[] = [
   CURRENT_USER,
   {
     id: 'user-2',
-    name: 'Sarah Connor',
-    email: 'sarah.c@teamflow.dev',
+    name: 'Ananya Patil',
+    email: 'ananya.patil@oquvi.dev',
     role: 'Member',
     status: 'online',
     department: 'UI/UX Design'
   },
   {
     id: 'user-3',
-    name: 'David Kim',
-    email: 'david.k@teamflow.dev',
+    name: 'Rohan Kulkarni',
+    email: 'rohan.kulkarni@oquvi.dev',
     role: 'Member',
     status: 'busy',
     department: 'Backend Infrastructure'
   },
   {
     id: 'user-4',
-    name: 'Maya Patel',
-    email: 'maya.p@teamflow.dev',
+    name: 'Sneha Joshi',
+    email: 'sneha.joshi@oquvi.dev',
     role: 'Member',
     status: 'away',
     department: 'Product Management'
   },
   {
     id: 'user-5',
-    name: 'Liam Zhang',
-    email: 'liam.z@teamflow.dev',
+    name: 'Aditya Deshmukh',
+    email: 'aditya.deshmukh@oquvi.dev',
     role: 'Member',
     status: 'offline',
     department: 'AI Research'
@@ -61,8 +61,8 @@ export const MOCK_USERS: User[] = [
 export const MOCK_PROJECTS: Project[] = [
   {
     id: 'proj-1',
-    title: 'TeamFlow Real-Time Engine',
-    description: 'High-performance collaborative state sync using WebSockets and CRDTs.',
+    title: 'CampusConnect Portal',
+    description: 'Comprehensive campus placement and student collaboration network with real-time peer groups.',
     status: 'in_progress',
     priority: 'urgent',
     progress: 72,
@@ -73,8 +73,8 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: 'proj-2',
-    title: 'Soft Lavender SaaS UI Design',
-    description: 'Accessible, reusable React UI components with sleek white and lavender aesthetics.',
+    title: 'SevaSetu Citizen Gateway',
+    description: 'Citizen service delivery hub with transparent tracking, automated grievance alerts, and localized dashboards.',
     status: 'in_progress',
     priority: 'high',
     progress: 88,
@@ -85,8 +85,8 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: 'proj-3',
-    title: 'AI Smart Task Summarizer',
-    description: 'Natural language workspace assistant to generate standup notes and action items.',
+    title: 'StudySync AI Assistant',
+    description: 'Intelligent academic workspace that summarizes lecture notes, schedules peer revisions, and tracks milestones.',
     status: 'planning',
     priority: 'medium',
     progress: 30,
@@ -97,8 +97,8 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: 'proj-4',
-    title: 'Collaborative Sprint Showcase',
-    description: 'Interactive prototype pitch, slide deck walkthrough, and demo scripts.',
+    title: 'EventMitra Hackathon Hub',
+    description: 'National hackathon coordination platform with live project submissions, mentor round slots, and team evaluations.',
     status: 'completed',
     priority: 'high',
     progress: 100,
@@ -113,8 +113,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-1',
     projectId: 'proj-1',
-    title: 'Configure WebSocket server heartbeat ping and reconnection protocol',
-    description: 'Ensure client sockets recover gracefully when network drops.',
+    title: 'Setup real-time state sync on CampusConnect gateway',
+    description: 'Ensure client sockets recover gracefully when connectivity drops.',
     status: 'todo',
     priority: 'urgent',
     assignee: CURRENT_USER,
@@ -124,8 +124,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-2',
     projectId: 'proj-2',
-    title: 'Implement soft lavender card styling and rounded button micro-animations',
-    description: 'Add subtle hover lift and smooth focus rings.',
+    title: 'Design accessible soft lavender UI components for SevaSetu portal',
+    description: 'Add subtle hover lift, crisp typography, and smooth focus rings.',
     status: 'in_progress',
     priority: 'high',
     assignee: MOCK_USERS[1],
@@ -135,8 +135,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-3',
     projectId: 'proj-1',
-    title: 'Optimize state reconciler algorithm for board cards',
-    description: 'Benchmarked 60fps renders when 50+ cards update concurrently.',
+    title: 'Optimize database index queries for EventMitra student directory',
+    description: 'Benchmarked fast response times when handling 50+ concurrent requests.',
     status: 'in_progress',
     priority: 'medium',
     assignee: MOCK_USERS[2],
@@ -146,8 +146,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-4',
     projectId: 'proj-2',
-    title: 'Create Badge and StatCard reusable primitives with pastel indicators',
-    description: 'All status tags now have accessible color contrasts.',
+    title: 'Deploy interactive verification badge system for CampusConnect',
+    description: 'All status tags now have accessible color contrasts and pastel indicators.',
     status: 'completed',
     priority: 'medium',
     assignee: CURRENT_USER,
@@ -157,8 +157,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-5',
     projectId: 'proj-3',
-    title: 'Fine-tune AI prompt templates for automated standup summaries',
-    description: 'Extract blockers and key decisions from yesterday activity.',
+    title: 'Train NLP model prompts on StudySync for lecture transcription notes',
+    description: 'Extract blockers, key concepts, and actionable flashcards from audio transcripts.',
     status: 'todo',
     priority: 'medium',
     assignee: MOCK_USERS[4],
@@ -168,8 +168,8 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'task-6',
     projectId: 'proj-4',
-    title: 'Record 3-minute hackathon demo video walkthrough',
-    description: 'Highlight real-time board movement and member presence.',
+    title: 'Complete final pitch deck and demo recording for EventMitra',
+    description: 'Highlight real-time board movement, student presence, and sprint telemetry.',
     status: 'completed',
     priority: 'urgent',
     assignee: MOCK_USERS[3],
@@ -182,37 +182,37 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
   {
     id: 'notif-1',
     title: 'New Mention in Project',
-    message: 'Sarah Connor mentioned you in "Soft Lavender SaaS UI Design": "Let\'s check the contrast on the active tab indicator."',
+    message: 'Ananya Patil mentioned you in "SevaSetu Citizen Gateway": "Let\'s check the contrast on the active tab indicator."',
     type: 'mention',
     timestamp: '10m ago',
     read: false,
-    userName: 'Sarah Connor',
+    userName: 'Ananya Patil',
     target: 'proj-2'
   },
   {
     id: 'notif-2',
     title: 'Task Assigned to You',
-    message: 'David Kim assigned you the task: "Configure WebSocket server heartbeat ping".',
+    message: 'Rohan Kulkarni assigned you the task: "Setup real-time state sync on CampusConnect gateway".',
     type: 'assignment',
     timestamp: '45m ago',
     read: false,
-    userName: 'David Kim',
+    userName: 'Rohan Kulkarni',
     target: 'task-1'
   },
   {
     id: 'notif-3',
     title: 'Project Milestone Achieved',
-    message: '"Collaborative Sprint Showcase" was marked as 100% completed by Maya Patel.',
+    message: '"EventMitra Hackathon Hub" was marked as 100% completed by Sneha Joshi.',
     type: 'project',
     timestamp: '3h ago',
     read: true,
-    userName: 'Maya Patel',
+    userName: 'Sneha Joshi',
     target: 'proj-4'
   },
   {
     id: 'notif-4',
     title: 'System Security Notice',
-    message: 'Automated workspace snapshot created and encrypted successfully.',
+    message: 'Automated Oquvi workspace snapshot created and encrypted successfully.',
     type: 'system',
     timestamp: '1d ago',
     read: true
@@ -222,30 +222,30 @@ export const MOCK_NOTIFICATIONS: AppNotification[] = [
 export const MOCK_ACTIVITIES: WorkspaceActivity[] = [
   {
     id: 'act-1',
-    user: { name: 'Sarah Connor' },
+    user: { name: 'Ananya Patil' },
     action: 'updated the design tokens for',
-    target: 'Soft Lavender SaaS UI Design',
+    target: 'SevaSetu Citizen Gateway',
     timestamp: '12m ago'
   },
   {
     id: 'act-2',
-    user: { name: 'Alex Rivera' },
+    user: { name: 'Aarav Sharma' },
     action: 'moved task to In Progress on',
-    target: 'Real-Time Sync Gateway',
+    target: 'CampusConnect Portal',
     timestamp: '34m ago'
   },
   {
     id: 'act-3',
-    user: { name: 'David Kim' },
+    user: { name: 'Rohan Kulkarni' },
     action: 'connected repository webhook for',
-    target: 'Backend Infrastructure',
+    target: 'EventMitra Hackathon Hub',
     timestamp: '2h ago'
   },
   {
     id: 'act-4',
-    user: { name: 'Maya Patel' },
-    action: 'created new project requirement',
-    target: 'AI Smart Task Summarizer',
+    user: { name: 'Sneha Joshi' },
+    action: 'created new project requirement on',
+    target: 'StudySync AI Assistant',
     timestamp: '4h ago'
   }
 ];

@@ -155,7 +155,7 @@ export const TeamPage: React.FC = () => {
               <Input
                 label="Email Address"
                 type="email"
-                placeholder="jordan@teamflow.dev"
+                placeholder="priya@oquvi.dev"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 required

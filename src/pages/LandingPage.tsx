@@ -14,9 +14,11 @@ import {
 } from 'lucide-react';
 import { Button, Card, Badge } from '../components/common';
 import { MOCK_TASKS, MOCK_USERS } from '../data/mockData';
+import { useAuth } from '../context';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'board' | 'presence' | 'metrics'>('board');
 
   return (
@@ -28,7 +30,7 @@ export const LandingPage: React.FC = () => {
             <div className="brand-icon">
               <Layers size={20} />
             </div>
-            <span>TeamFlow</span>
+            <span>Oquvi</span>
           </Link>
 
           <nav style={{ display: 'flex', gap: '20px' }}>
@@ -45,21 +47,34 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/workspace')}
-          >
-            Kanban Board
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            icon={<ArrowRight size={15} />}
-            onClick={() => navigate('/dashboard')}
-          >
-            Launch Workspace
-          </Button>
+          {user ? (
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<ArrowRight size={15} />}
+              onClick={() => navigate('/dashboard')}
+            >
+              Go to Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/login')}
+              >
+                Log In
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<ArrowRight size={15} />}
+                onClick={() => navigate('/signup')}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
@@ -117,7 +132,7 @@ export const LandingPage: React.FC = () => {
               <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }} />
               <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }} />
               <span style={{ marginLeft: '12px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>
-                TeamFlow Live Workspace — Sprint #1
+                Oquvi Live Workspace — Sprint #1
               </span>
             </div>
 
@@ -415,7 +430,7 @@ export const LandingPage: React.FC = () => {
           }}
         >
           <h2 style={{ fontSize: '2.4rem', fontWeight: 800, marginBottom: '14px', color: '#ffffff' }}>
-            Ready to experience TeamFlow?
+            Ready to experience Oquvi?
           </h2>
           <p
             style={{
@@ -462,7 +477,7 @@ export const LandingPage: React.FC = () => {
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
           <Layers size={18} color="var(--primary)" />
-          <strong style={{ color: 'var(--text-main)' }}>TeamFlow Workspace</strong>
+          <strong style={{ color: 'var(--text-main)' }}>Oquvi Workspace</strong>
           <span>• Built for high-velocity teams</span>
         </div>
         <p style={{ margin: 0 }}>

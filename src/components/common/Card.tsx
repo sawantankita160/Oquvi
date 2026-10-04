@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * TeamFlow - Reusable Card Component
+ * Oquvi - Reusable Card Component
  * 
  * Beginner Note:
  * Cards are modular content containers. We can export compound sub-components

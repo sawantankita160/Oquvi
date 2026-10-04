@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
+import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import {
   LandingPage,
   DashboardPage,
@@ -9,15 +10,21 @@ import {
   TeamPage,
   NotificationsPage,
   SettingsPage,
-  NotFoundPage
+  NotFoundPage,
+  LoginPage,
+  SignupPage
 } from '../pages';
 
 /**
- * TeamFlow - Central Application Routes
+ * Oquvi - Central Application Routes
  * 
- * Routes:
- * - / -> Marketing Landing Page (Interactive Hero, Mockups, Feature Pillars)
- * - /dashboard -> SaaS Dashboard Workspace
+ * Public Routes:
+ * - / -> Marketing Landing Page
+ * - /login -> Supabase Authentication Login
+ * - /signup -> Supabase Authentication Sign Up
+ * 
+ * Protected Routes (Requires Supabase Session):
+ * - /dashboard -> Main Sprint Dashboard
  * - /projects -> Projects Catalog & Filters
  * - /workspace -> Sprint Kanban Board (To Do, In Progress, Completed)
  * - /team -> Team Members Directory
@@ -28,11 +35,19 @@ import {
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/* Public Marketing Landing Page */}
+      {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
 
-      {/* Authenticated / Workspace App Shell */}
-      <Route element={<AppLayout />}>
+      {/* Protected Workspace Shell Routes */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="projects" element={<ProjectsPage />} />
         <Route path="workspace" element={<WorkspacePage />} />

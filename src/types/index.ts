@@ -1,5 +1,5 @@
 /**
- * TeamFlow - Core TypeScript Definitions
+ * Oquvi - Core TypeScript Definitions
  * 
  * Clean, well-typed interfaces for the Collaborative Project Workspace.
  */

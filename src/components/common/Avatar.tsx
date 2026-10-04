@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { UserStatus } from '../../types';
 
 /**
- * TeamFlow - Collaborative Avatar Component
+ * Oquvi - Collaborative Avatar Component
  * 
  * Shows a user picture or calculated initials, along with their real-time presence dot.
  */

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -10,10 +10,12 @@ import {
   X,
   Layers,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  LogOut
 } from 'lucide-react';
 import { CURRENT_USER } from '../../data/mockData';
 import { Avatar } from '../common/Avatar';
+import { useAuth } from '../../context';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,6 +23,19 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.email?.split('@')[0] ||
+    CURRENT_USER.name;
+
+  const handleLogout = async () => {
+    onClose();
+    await signOut();
+    navigate('/login', { replace: true });
+  };
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', path: '/projects', icon: FolderKanban, badge: '4' },
@@ -38,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <div className="brand-icon">
             <Layers size={20} />
           </div>
-          <span>TeamFlow</span>
+          <span>Oquvi</span>
         </Link>
 
         <button
@@ -132,20 +147,48 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
       </nav>
 
-      {/* Footer User Profile */}
+      {/* Footer User Profile with Logout */}
       <div className="sidebar-footer">
-        <Link to="/settings" className="sidebar-user" onClick={onClose}>
+        <Link to="/settings" className="sidebar-user" onClick={onClose} style={{ flex: 1 }}>
           <Avatar
-            name={CURRENT_USER.name}
+            name={displayName}
             size="md"
             status={CURRENT_USER.status}
             showStatus
           />
           <div className="user-info">
-            <span className="user-name">{CURRENT_USER.name}</span>
-            <span className="user-role">{CURRENT_USER.role}</span>
+            <span className="user-name">{displayName}</span>
+            <span className="user-role">{user ? user.email : CURRENT_USER.role}</span>
           </div>
         </Link>
+
+        <button
+          onClick={handleLogout}
+          title="Sign Out"
+          aria-label="Sign Out"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text-dim)',
+            cursor: 'pointer',
+            padding: '6px',
+            borderRadius: 'var(--radius-sm)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all var(--transition-fast)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--rose-500)';
+            e.currentTarget.style.background = '#ffe4e6';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--text-dim)';
+            e.currentTarget.style.background = 'transparent';
+          }}
+        >
+          <LogOut size={16} />
+        </button>
       </div>
     </aside>
   );

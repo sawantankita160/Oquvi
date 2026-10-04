@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * TeamFlow - Form Input Component
+ * Oquvi - Form Input Component
  */
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

@@ -11,7 +11,7 @@ export const SettingsPage: React.FC = () => {
 
   // Workspace state
   const [workspaceName, setWorkspaceName] = useState('Hackathon Team Alpha');
-  const [slug, setSlug] = useState('teamflow-alpha');
+  const [slug, setSlug] = useState('oquvi-alpha');
 
   // Notification toggles
   const [notifyMentions, setNotifyMentions] = useState(true);
@@ -108,7 +108,7 @@ export const SettingsPage: React.FC = () => {
                 label="Workspace Slug / URL"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                helperText="teamflow.dev/workspace/your-slug"
+                helperText="oquvi.dev/workspace/your-slug"
               />
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>

@@ -1,17 +1,20 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { AppRoutes } from './routes/AppRoutes';
 
 /**
- * TeamFlow - Root Application Component
+ * Oquvi - Root Application Component
  * 
- * Sets up React Router context and renders application routes.
+ * Configures BrowserRouter and AuthProvider across the application.
  */
 
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
 };

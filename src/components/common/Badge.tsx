@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * TeamFlow - Reusable Badge Component
+ * Oquvi - Reusable Badge Component
  * 
  * Used for status tags, priority levels, category tags, and notification counts.
  */

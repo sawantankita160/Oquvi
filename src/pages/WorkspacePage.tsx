@@ -94,7 +94,7 @@ export const WorkspacePage: React.FC = () => {
               marginBottom: '4px'
             }}
           >
-            <span>TeamFlow Workspace</span>
+            <span>Oquvi Workspace</span>
             <ChevronRight size={14} />
             <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Sprint Kanban Board</span>
           </div>

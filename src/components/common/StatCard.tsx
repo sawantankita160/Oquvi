@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 /**
- * TeamFlow - StatCard Component
+ * Oquvi - StatCard Component
  * Displays workspace performance metrics, counts, and velocity.
  */
 
