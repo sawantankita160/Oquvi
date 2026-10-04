@@ -44,6 +44,33 @@ Oquvi uses real Supabase Auth for user signup, login, session persistence, and p
 
 ---
 
+## 🗄️ Supabase Database Schema & Security Migration
+
+Oquvi includes a comprehensive, version-controlled PostgreSQL schema located in [`supabase/migrations/20261004000000_create_oquvi_schema.sql`](./supabase/migrations/20261004000000_create_oquvi_schema.sql) (also mirrored at [`supabase/schema.sql`](./supabase/schema.sql)).
+
+### 1. Database Tables (7 Core Tables)
+- **`profiles`**: User profiles linked 1:1 with `auth.users(id)`. Managed automatically via a database trigger (`on_auth_user_created`) on signup.
+- **`projects`**: Collaborative workspaces with title, description, `owner_id`, deadline, and archived status.
+- **`project_members`**: Join table mapping users to projects with roles (`owner`, `member`), protected by a unique constraint `(project_id, user_id)`.
+- **`tasks`**: Project tasks with assigned user, title, description, status (`todo`, `in_progress`, `completed`), priority (`low`, `medium`, `high`, `urgent`), and deadline.
+- **`task_comments`**: Discussion threads on tasks authored by project collaborators.
+- **`notifications`**: User-specific notification inbox for project/task alerts.
+- **`activity_logs`**: Immutable audit trail of actions taken inside projects.
+
+### 2. Security & Row Level Security (RLS)
+- **RLS Enabled on All Tables:** Every single table enforces strict PostgreSQL Row Level Security.
+- **Authorization via `auth.uid()`:** Policies verify authenticated user identity directly in Postgres; client-supplied IDs are never trusted.
+- **Security Definer Helpers:** Helper functions (`is_project_owner`, `is_project_member`, `can_access_project`, `can_access_task`) prevent infinite recursion in RLS evaluation.
+- **Data Isolation:** Users can only view and modify projects, tasks, comments, and activity logs for workspaces where they are an owner or accepted member.
+
+### 3. How to Apply the Migration in Supabase
+1. Open the [Supabase Dashboard](https://supabase.com/dashboard) and select your Oquvi project (`jxxstazoqtolnegkmcpp`).
+2. In the left-hand navigation, click on the **SQL Editor** tab (icon `<_>`).
+3. Click **+ New Query**.
+4. Copy the entire contents of [`supabase/schema.sql`](./supabase/schema.sql) and paste it into the editor.
+5. Click **Run** (or press `Ctrl + Enter`).
+6. All 7 tables, indexes, triggers, and RLS policies will be created instantaneously!
+
 ## 🗺️ Application Views & Routing
 
 | Route | Page | Access Level | Key Features |

@@ -4,6 +4,8 @@
  * Clean, well-typed interfaces for the Collaborative Project Workspace.
  */
 
+export type { Database, Json, ProjectMemberRole } from './database';
+
 export type UserStatus = 'online' | 'offline' | 'busy' | 'away';
 
 export interface User {

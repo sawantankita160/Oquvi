@@ -136,9 +136,9 @@ export const LoginPage: React.FC = () => {
           >
             <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <strong>Supabase Setup Required:</strong>
+              <strong>Supabase Publishable Key Required:</strong>
               <div style={{ marginTop: '2px' }}>
-                Please set your real <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your local <code>.env</code> file.
+                Please paste your real Supabase Project URL and Publishable API key (starts with <code>eyJ...</code> or <code>sb_publishable_...</code>) into your project's <code>.env</code> file.
               </div>
             </div>
           </div>
