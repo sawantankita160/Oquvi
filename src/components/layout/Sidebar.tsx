@@ -13,13 +13,19 @@ import {
   Sparkles,
   LogOut
 } from 'lucide-react';
-import { CURRENT_USER } from '../../data/mockData';
 import { Avatar } from '../common/Avatar';
 import { useAuth } from '../../context';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+interface NavItem {
+  label: string;
+  path: string;
+  icon: React.ComponentType<{ size?: number }>;
+  badge?: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
@@ -29,19 +35,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const displayName =
     user?.user_metadata?.full_name ||
     user?.email?.split('@')[0] ||
-    CURRENT_USER.name;
+    'Team Member';
 
   const handleLogout = async () => {
     onClose();
     await signOut();
     navigate('/login', { replace: true });
   };
-  const navItems = [
+  const navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Projects', path: '/projects', icon: FolderKanban, badge: '4' },
-    { label: 'Kanban Board', path: '/workspace', icon: Columns3, badge: '6' },
-    { label: 'Team Members', path: '/team', icon: Users, badge: '5' },
-    { label: 'Notifications', path: '/notifications', icon: Bell, badge: '2' },
+    { label: 'Projects', path: '/projects', icon: FolderKanban },
+    { label: 'Kanban Board', path: '/workspace', icon: Columns3 },
+    { label: 'Team Members', path: '/team', icon: Users },
+    { label: 'Notifications', path: '/notifications', icon: Bell },
     { label: 'Settings', path: '/settings', icon: Settings }
   ];
 
@@ -153,12 +159,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <Avatar
             name={displayName}
             size="md"
-            status={CURRENT_USER.status}
+            status="online"
             showStatus
           />
           <div className="user-info">
             <span className="user-name">{displayName}</span>
-            <span className="user-role">{user ? user.email : CURRENT_USER.role}</span>
+            <span className="user-role">{user ? user.email : 'Collaborator'}</span>
           </div>
         </Link>
 

@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
 import { Save, Bell, Shield, Sliders, Check, UserCheck } from 'lucide-react';
 import { Card, CardBody, Button, Input } from '../components/common';
-import { CURRENT_USER } from '../data/mockData';
+import { useAuth } from '../context';
 
 export const SettingsPage: React.FC = () => {
-  // Profile state
-  const [userName, setUserName] = useState(CURRENT_USER.name);
-  const [userEmail, setUserEmail] = useState(CURRENT_USER.email);
-  const [department, setDepartment] = useState(CURRENT_USER.department || 'Core Engineering');
+  const { user } = useAuth();
+
+  const resolvedName =
+    user?.user_metadata?.full_name ||
+    user?.email?.split('@')[0] ||
+    'Team Member';
+  const resolvedEmail = user?.email || '';
+  const resolvedRole = 'Core Engineering';
+
+  // Profile state with fallback to resolved auth profile
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [department, setDepartment] = useState<string | null>(null);
+
+  const currentName = userName ?? resolvedName;
+  const currentEmail = userEmail ?? resolvedEmail;
+  const currentDept = department ?? resolvedRole;
 
   // Workspace state
   const [workspaceName, setWorkspaceName] = useState('Hackathon Team Alpha');
@@ -70,19 +83,19 @@ export const SettingsPage: React.FC = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <Input
                 label="Full Name"
-                value={userName}
+                value={currentName}
                 onChange={(e) => setUserName(e.target.value)}
               />
               <Input
                 label="Email Address"
-                value={userEmail}
+                value={currentEmail}
                 onChange={(e) => setUserEmail(e.target.value)}
               />
             </div>
 
             <Input
               label="Department / Role"
-              value={department}
+              value={currentDept}
               onChange={(e) => setDepartment(e.target.value)}
             />
           </CardBody>

@@ -546,3 +546,63 @@ export async function fetchActivityLogs(limit = 10): Promise<{
     return { data: null, error: err instanceof Error ? err.message : 'Failed to fetch activity logs.' };
   }
 }
+
+/**
+ * Fetch activity logs specifically scoped to a project.
+ */
+export async function fetchProjectActivityLogs(projectId: string, limit = 25): Promise<{
+  data: Array<{
+    id: string;
+    action: string;
+    created_at: string;
+    user: {
+      name: string;
+      avatarUrl?: string;
+    } | null;
+  }> | null;
+  error: string | null;
+}> {
+  try {
+    const { data, error } = await supabase
+      .from('activity_logs')
+      .select(`
+        id,
+        action,
+        created_at,
+        profiles (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    if (!data) return { data: [], error: null };
+
+    const formatted = data.map((item) => {
+      const prof = item.profiles as unknown as { full_name: string; avatar_url: string | null } | null;
+      return {
+        id: item.id,
+        action: item.action,
+        created_at: item.created_at,
+        user: prof
+          ? {
+              name: prof.full_name,
+              avatarUrl: prof.avatar_url || undefined
+            }
+          : null
+      };
+    });
+
+    return { data: formatted, error: null };
+  } catch (err) {
+    return { data: null, error: err instanceof Error ? err.message : 'Failed to fetch project activity logs.' };
+  }
+}
+

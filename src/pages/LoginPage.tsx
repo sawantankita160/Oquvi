@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Layers, Mail, Lock, ArrowRight, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Layers, Mail, Lock, ArrowRight, AlertCircle, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context';
 import { Button, Card, Input } from '../components/common';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading, signIn, isConfigured } = useAuth();
+  const { user, loading, signIn, resendConfirmation, isConfigured } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isUnconfirmedError, setIsUnconfirmedError] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   // If already authenticated, redirect to dashboard
@@ -49,27 +52,59 @@ export const LoginPage: React.FC = () => {
 
     setSubmitting(true);
     setErrorMsg(null);
+    setResendMessage(null);
+    setIsUnconfirmedError(false);
 
     try {
-      const { error } = await signIn(email.trim(), password);
+      const { error, data } = await signIn(email.trim(), password);
 
       if (error) {
-        // Human-friendly error parsing
-        if (error.message.includes('Invalid login credentials')) {
-          setErrorMsg('Invalid email or password. Please verify your credentials or sign up.');
-        } else if (error.message.includes('Email not confirmed')) {
-          setErrorMsg('Please confirm your email address by clicking the link sent to your inbox.');
+        const errorLower = (error.message || '').toLowerCase();
+
+        if (errorLower.includes('email not confirmed')) {
+          setIsUnconfirmedError(true);
+          setErrorMsg(
+            'This account was created when email confirmation was required, and its email address has not been confirmed in Supabase yet. You can resend the verification link below, or confirm the user in the Supabase Dashboard.'
+          );
+        } else if (errorLower.includes('invalid login credentials')) {
+          setErrorMsg('Invalid email or password. Please verify your credentials or create a new account.');
+        } else if (errorLower.includes('too many requests')) {
+          setErrorMsg('Too many sign-in attempts. Please wait a moment before trying again.');
         } else {
           setErrorMsg(error.message);
         }
-      } else {
-        // Successfully authenticated!
+      } else if (data?.session || user) {
+        // Successfully authenticated by Supabase! Allow user straight into app
         navigate(destination, { replace: true });
       }
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'An unexpected error occurred during login.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email.trim())) {
+      setErrorMsg('Please enter a valid email address above to resend the confirmation email.');
+      return;
+    }
+
+    setResendStatus('sending');
+    setResendMessage(null);
+
+    try {
+      const { error } = await resendConfirmation(email.trim());
+      if (error) {
+        setResendStatus('error');
+        setResendMessage(error.message);
+      } else {
+        setResendStatus('sent');
+        setResendMessage(`Confirmation email resent to ${email.trim()}! Please check your inbox and spam folder.`);
+      }
+    } catch (err: unknown) {
+      setResendStatus('error');
+      setResendMessage(err instanceof Error ? err.message : 'Failed to resend confirmation email.');
     }
   };
 
@@ -149,7 +184,7 @@ export const LoginPage: React.FC = () => {
           <div
             style={{
               display: 'flex',
-              alignItems: 'flex-start',
+              flexDirection: 'column',
               gap: '10px',
               padding: '12px 14px',
               borderRadius: 'var(--radius-sm)',
@@ -157,12 +192,69 @@ export const LoginPage: React.FC = () => {
               border: '1px solid rgba(225, 29, 72, 0.25)',
               color: '#be123c',
               fontSize: '0.85rem',
+              lineHeight: 1.45,
+              marginBottom: '18px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>{errorMsg}</span>
+            </div>
+
+            {isUnconfirmedError && (
+              <div
+                style={{
+                  marginTop: '4px',
+                  paddingTop: '10px',
+                  borderTop: '1px solid rgba(225, 29, 72, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <span style={{ fontSize: '0.8rem', color: '#9f1239' }}>
+                  Need a new verification link?
+                </span>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  disabled={resendStatus === 'sending'}
+                  onClick={handleResendConfirmation}
+                  icon={resendStatus === 'sending' ? <RefreshCw size={13} /> : undefined}
+                >
+                  {resendStatus === 'sending' ? 'Sending link...' : 'Resend Verification Link'}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Resend status feedback */}
+        {resendMessage && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '10px',
+              padding: '12px 14px',
+              borderRadius: 'var(--radius-sm)',
+              background: resendStatus === 'sent' ? '#ecfdf5' : '#ffe4e6',
+              border: `1px solid ${resendStatus === 'sent' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(225, 29, 72, 0.25)'}`,
+              color: resendStatus === 'sent' ? '#065f46' : '#be123c',
+              fontSize: '0.85rem',
               lineHeight: 1.4,
               marginBottom: '18px'
             }}
           >
-            <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
-            <span>{errorMsg}</span>
+            {resendStatus === 'sent' ? (
+              <CheckCircle2 size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+            ) : (
+              <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+            )}
+            <span>{resendMessage}</span>
           </div>
         )}
 

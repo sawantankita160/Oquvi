@@ -68,14 +68,14 @@ export const SignupPage: React.FC = () => {
           setErrorMsg(error.message);
         }
       } else {
-        // If Supabase has email confirmation enabled
+        // If Supabase returns empty identities, user already exists
         if (data?.user && !data.user.identities?.length) {
           setErrorMsg('An account with this email already exists. Please log in.');
-        } else if (data?.user && data.user.confirmed_at) {
-          // If auto-confirmed, redirect straight to dashboard
+        } else if (data?.session || data?.user?.email_confirmed_at) {
+          // With Supabase Confirm email OFF (or auto-confirmed), session is active: go straight into the app!
           navigate('/dashboard', { replace: true });
         } else {
-          // Email confirmation pending
+          // Only if Supabase has Confirm email turned ON and no active session was returned
           setSuccessMsg(
             `Account created successfully! A confirmation link has been sent to ${email.trim()}. Please verify your email to log in.`
           );

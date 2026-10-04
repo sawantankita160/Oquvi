@@ -55,12 +55,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
-    return { error };
+    if (!error && data?.session) {
+      setSession(data.session);
+      setUser(data.user);
+    }
+
+    return {
+      error,
+      data: {
+        user: data?.user ?? null,
+        session: data?.session ?? null
+      }
+    };
   };
 
   // Real Supabase sign up with optional full_name metadata
@@ -84,7 +95,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return { error, data: { user: data.user } };
+    if (!error && data?.session) {
+      setSession(data.session);
+      setUser(data.user);
+    }
+
+    return {
+      error,
+      data: {
+        user: data?.user ?? null,
+        session: data?.session ?? null
+      }
+    };
+  };
+
+  // Resend email confirmation if account was created under an email confirmation policy
+  const resendConfirmation = async (email: string) => {
+    if (!isSupabaseConfigured) {
+      return {
+        error: {
+          name: 'ConfigurationError',
+          message: 'Supabase credentials are not configured.'
+        } as AuthError
+      };
+    }
+
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email
+    });
+
+    return { error };
   };
 
   // Real Supabase sign out
@@ -105,7 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isConfigured: isSupabaseConfigured,
         signIn,
         signUp,
-        signOut
+        signOut,
+        resendConfirmation
       }}
     >
       {children}

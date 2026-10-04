@@ -1,58 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Bell,
   CheckCheck,
-  MessageSquare,
   CheckSquare,
   Sparkles,
-  Info,
   Clock,
-  Trash2
+  Trash2,
+  FolderKanban,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
-import { MOCK_NOTIFICATIONS } from '../data/mockData';
-import type { AppNotification, NotificationType } from '../types';
+import { useAuth } from '../context';
+import {
+  fetchNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  deleteNotification,
+  type NotificationWithContext
+} from '../lib/notificationService';
+import { subscribeToUserNotifications } from '../lib/realtimeService';
 import { Card, Button, Badge } from '../components/common';
 
 export const NotificationsPage: React.FC = () => {
-  const [notifications, setNotifications] = useState<AppNotification[]>(MOCK_NOTIFICATIONS);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'unread' | NotificationType>('all');
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [notifications, setNotifications] = useState<NotificationWithContext[]>([]);
+  const [loading, setLoading] = useState(Boolean(user));
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'unread'>('all');
+
+  const loadNotifications = useCallback(async () => {
+    if (!user) return;
+    const { data, error } = await fetchNotifications(50);
+    setLoading(false);
+    if (error) {
+      setErrorMsg(error);
+    } else {
+      setNotifications(data || []);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!user) return;
+
+    fetchNotifications(50).then(({ data, error }) => {
+      if (!isMounted) return;
+      setLoading(false);
+      if (error) {
+        setErrorMsg(error);
+      } else {
+        setNotifications(data || []);
+      }
+    });
+
+    const unsubscribe = subscribeToUserNotifications(user.id, () => {
+      if (!isMounted) return;
+      loadNotifications();
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, [user, loadNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    const { error } = await markAllNotificationsAsRead();
+    if (error) {
+      setErrorMsg(`Failed to mark all as read: ${error}`);
+      loadNotifications();
+    } else {
+      setSuccessMsg('All notifications marked as read.');
+      setTimeout(() => setSuccessMsg(null), 3000);
+    }
   };
 
-  const handleToggleRead = (id: string) => {
+  const handleToggleRead = async (id: string, currentRead: boolean) => {
+    // Optimistic toggle
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
+      prev.map((n) => (n.id === id ? { ...n, read: !currentRead } : n))
     );
+    if (!currentRead) {
+      await markNotificationAsRead(id);
+    }
   };
 
-  const handleDismiss = (id: string) => {
+  const handleDismiss = async (id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
+    const { error } = await deleteNotification(id);
+    if (error) {
+      setErrorMsg(`Failed to dismiss notification: ${error}`);
+      loadNotifications();
+    }
   };
 
   const filteredNotifications = notifications.filter((n) => {
     if (activeFilter === 'unread') return !n.read;
-    if (activeFilter === 'all') return true;
-    return n.type === activeFilter;
+    return true;
   });
-
-  const getNotificationIcon = (type: NotificationType) => {
-    switch (type) {
-      case 'mention':
-        return <MessageSquare size={18} color="#4f46e5" />;
-      case 'assignment':
-        return <CheckSquare size={18} color="#0284c7" />;
-      case 'project':
-        return <Sparkles size={18} color="#7c3aed" />;
-      case 'system':
-        return <Info size={18} color="#d97706" />;
-      default:
-        return <Bell size={18} color="#4f46e5" />;
-    }
-  };
 
   return (
     <div>
@@ -61,7 +113,7 @@ export const NotificationsPage: React.FC = () => {
         <div>
           <h1 className="page-title">Notifications</h1>
           <p className="page-description">
-            Stay on top of mentions, assignment updates, and sprint alerts.
+            Stay on top of task assignments, sprint activity, and team comments in real time.
           </p>
         </div>
 
@@ -79,6 +131,48 @@ export const NotificationsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Success Notification */}
+      {successMsg && (
+        <div
+          style={{
+            padding: '12px 16px',
+            borderRadius: 'var(--radius-sm)',
+            background: '#dcfce7',
+            border: '1px solid rgba(22, 163, 74, 0.25)',
+            color: '#15803d',
+            fontSize: '0.85rem',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <CheckCircle2 size={16} />
+          <span>{successMsg}</span>
+        </div>
+      )}
+
+      {/* Error Notification */}
+      {errorMsg && (
+        <div
+          style={{
+            padding: '12px 16px',
+            borderRadius: 'var(--radius-sm)',
+            background: '#ffe4e6',
+            border: '1px solid rgba(225, 29, 72, 0.25)',
+            color: '#be123c',
+            fontSize: '0.85rem',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <AlertCircle size={16} />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
       {/* Filter Tabs */}
       <div
         style={{
@@ -91,32 +185,38 @@ export const NotificationsPage: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {(['all', 'unread', 'mention', 'assignment', 'project', 'system'] as const).map(
-            (filter) => (
-              <Button
-                key={filter}
-                size="sm"
-                variant={activeFilter === filter ? 'primary' : 'outline'}
-                onClick={() => setActiveFilter(filter)}
-              >
-                {filter === 'all'
-                  ? 'All'
-                  : filter === 'unread'
-                  ? `Unread (${unreadCount})`
-                  : filter.charAt(0).toUpperCase() + filter.slice(1) + 's'}
-              </Button>
-            )
-          )}
+          <Button
+            size="sm"
+            variant={activeFilter === 'all' ? 'primary' : 'outline'}
+            onClick={() => setActiveFilter('all')}
+          >
+            All Updates ({notifications.length})
+          </Button>
+
+          <Button
+            size="sm"
+            variant={activeFilter === 'unread' ? 'primary' : 'outline'}
+            onClick={() => setActiveFilter('unread')}
+          >
+            Unread ({unreadCount})
+          </Button>
         </div>
 
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          Showing <strong>{filteredNotifications.length}</strong> updates
+          Showing <strong>{filteredNotifications.length}</strong> alerts
         </div>
       </div>
 
+      {/* Loading Skeleton */}
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+          Loading your notifications...
+        </div>
+      )}
+
       {/* Notifications List */}
-      {filteredNotifications.length === 0 ? (
-        <Card style={{ textAlign: 'center', padding: '48px 24px' }}>
+      {!loading && filteredNotifications.length === 0 ? (
+        <Card style={{ textAlign: 'center', padding: '54px 24px' }}>
           <div
             style={{
               width: '54px',
@@ -132,9 +232,11 @@ export const NotificationsPage: React.FC = () => {
           >
             <Bell size={26} />
           </div>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '6px' }}>No notifications here</h3>
+          <h3 style={{ fontSize: '1.15rem', marginBottom: '6px', color: 'var(--text-main)' }}>
+            No notifications here
+          </h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
-            You're completely caught up with all sprint activity.
+            You're completely caught up with all sprint task assignments and comments.
           </p>
         </Card>
       ) : (
@@ -172,7 +274,11 @@ export const NotificationsPage: React.FC = () => {
                       flexShrink: 0
                     }}
                   >
-                    {getNotificationIcon(notif.type)}
+                    {notif.task_id ? (
+                      <CheckSquare size={18} color="var(--primary)" />
+                    ) : (
+                      <Sparkles size={18} color="#7c3aed" />
+                    )}
                   </div>
 
                   <div style={{ flex: 1 }}>
@@ -181,23 +287,31 @@ export const NotificationsPage: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
-                        marginBottom: '4px',
+                        marginBottom: '6px',
                         flexWrap: 'wrap'
                       }}
                     >
-                      <h4
-                        style={{
-                          fontSize: '0.95rem',
-                          fontWeight: notif.read ? 600 : 700,
-                          margin: 0,
-                          color: 'var(--text-main)'
-                        }}
-                      >
-                        {notif.title}
-                      </h4>
-                      <Badge variant={notif.type === 'mention' ? 'active' : notif.type === 'assignment' ? 'in_progress' : 'planning'}>
-                        {notif.type}
-                      </Badge>
+                      {notif.project && (
+                        <Badge variant="in_progress">
+                          {notif.project.name}
+                        </Badge>
+                      )}
+
+                      {notif.task && (
+                        <span
+                          style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            color: 'var(--text-muted)',
+                            background: '#f1f5f9',
+                            padding: '2px 8px',
+                            borderRadius: '4px'
+                          }}
+                        >
+                          Task: {notif.task.title}
+                        </span>
+                      )}
+
                       {!notif.read && (
                         <span
                           style={{
@@ -212,8 +326,9 @@ export const NotificationsPage: React.FC = () => {
 
                     <p
                       style={{
-                        fontSize: '0.875rem',
-                        color: 'var(--text-body)',
+                        fontSize: '0.9rem',
+                        color: 'var(--text-main)',
+                        fontWeight: notif.read ? 400 : 600,
                         margin: '0 0 8px 0',
                         lineHeight: 1.5
                       }}
@@ -232,9 +347,29 @@ export const NotificationsPage: React.FC = () => {
                     >
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Clock size={12} />
-                        {notif.timestamp}
+                        {new Date(notif.created_at).toLocaleString()}
                       </span>
-                      {notif.userName && <span>From: <strong>{notif.userName}</strong></span>}
+
+                      {notif.project_id && (
+                        <button
+                          onClick={() => navigate(`/workspace?projectId=${notif.project_id}`)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--primary)',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem',
+                            padding: 0,
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <FolderKanban size={12} />
+                          Go to Workspace
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -244,7 +379,7 @@ export const NotificationsPage: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleToggleRead(notif.id)}
+                    onClick={() => handleToggleRead(notif.id, notif.read)}
                     title={notif.read ? 'Mark as unread' : 'Mark as read'}
                   >
                     {notif.read ? 'Unread' : 'Mark Read'}

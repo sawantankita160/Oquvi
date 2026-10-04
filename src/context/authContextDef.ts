@@ -6,9 +6,10 @@ export interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isConfigured: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: AuthError | null; data?: { user: User | null } }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null; data?: { user: User | null; session: Session | null } }>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: AuthError | null; data?: { user: User | null; session: Session | null } }>;
   signOut: () => Promise<void>;
+  resendConfirmation: (email: string) => Promise<{ error: AuthError | null }>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

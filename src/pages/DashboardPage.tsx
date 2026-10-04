@@ -8,7 +8,8 @@ import {
   ArrowRight,
   Clock,
   Sparkles,
-  Plus
+  Plus,
+  BarChart3
 } from 'lucide-react';
 import { useAuth } from '../context';
 import {
@@ -99,6 +100,14 @@ export const DashboardPage: React.FC = () => {
             onClick={() => navigate('/projects')}
           >
             New Project
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            icon={<BarChart3 size={15} />}
+            onClick={() => navigate('/workspace?view=insights')}
+          >
+            Team Insights
           </Button>
           <Button
             variant="primary"
@@ -264,6 +273,48 @@ export const DashboardPage: React.FC = () => {
                           }}
                         />
                       </div>
+                    </div>
+
+                    {/* Card Footer: Members & Team Insights shortcut */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingTop: '4px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Users size={13} color="var(--text-muted)" />
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {project.members.length} {project.members.length === 1 ? 'member' : 'members'}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/workspace?projectId=${project.id}&view=insights`);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--primary)',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}
+                        title="View Team Insights telemetry for this project"
+                      >
+                        <BarChart3 size={12} />
+                        Team Insights →
+                      </button>
                     </div>
                   </div>
                 ))}
